@@ -389,6 +389,29 @@ void factor()
     }
 }
 
+// 5) ✅  factor → ( expr ) | num | id
+/*void factor()
+{
+	switch (lookahead)
+	{
+	case '(':
+		match('(');
+		expr();
+		match(')');
+		break;
+	case NUM:
+		emit(NUM, tokenval);
+		match(NUM);
+		break;
+	case ID:
+		emit(ID, tokenval);
+		match(ID);
+		break;
+	default:
+		error();
+	}
+}
+*/
 /*
 <term> ::= <factor> <term>
 
