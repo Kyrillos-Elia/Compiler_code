@@ -545,6 +545,8 @@ void statement()
         match(DO);
         statement();
         /* decrement loop counter and test before jumping back */
+        cout<<"push 1\n";
+        cout<<"pop 1\n";
         cout << "sub r2,1\n";
         cout << "cmp r2,0\n";
         cout << "b for\n";
