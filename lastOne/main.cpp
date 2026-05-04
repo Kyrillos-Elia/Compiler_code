@@ -1,7 +1,7 @@
 /*
 <program> ::= <statement> <program’>
 
-<program’> ::= ; <statement> <program’> | ε
+<program> ::= ; <statement> <program> | ε
 
 
 <statement> ::= <id> = <expr>
@@ -26,27 +26,27 @@
 --------------------------------------------------
 
 
-<expr> ::= <term> <expr’>
+<expr> ::= <term> <expr>
 
-<expr’> ::= + <term> <expr’>
-          | - <term> <expr’>
-          | or <term> <expr’>
+<expr> ::= + <term> <expr>
+          | - <term> <expr>
+          | or <term> <expr>
           | ε
 
 
-<term> ::= <factor> <term’>
+<term> ::= <factor> <term>
 
-<term’> ::= * <factor> <term’>
-          | / <factor> <term’>
-          | mod <factor> <term’>
-          | div <factor> <term’>
-          | and <factor> <term’>
+<term> ::= * <factor> <term>
+          | / <factor> <term>
+          | mod <factor> <term>
+          | div <factor> <term>
+          | and <factor> <term>
           | ε
 
 
-<factor> ::= <base> <factor’>
+<factor> ::= <base> <factor>
 
-<factor’> ::= ^ <base> <factor’> | ε
+<factor’> ::= ^ <base> <factor> | ε
 
 
 <base> ::= ( <expr> )
@@ -79,7 +79,8 @@
 
 <digit> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 
-<letter> ::= a | b | c | ... | z | A | B | C | ... | Z*/
+<letter> ::= a | b | c | ... | z | A | B | C | ... | Z
+*/
 
 #include <iostream>
 #include <cstring>
@@ -176,7 +177,8 @@ struct entry keywords[] = {
 
 int lookup(char s[])
 {
-    for (int p = lastentry; p > 0; p--)
+    int p;
+    for (p = lastentry; p > 0; p--)
         if (strcmp(symtable[p].lexptr, s) == 0)
             return p;
     return 0;
@@ -327,7 +329,7 @@ void match(int t)
     if (lookahead == t)
         lookahead = lexan();
     else
-        cout << "syntax error\n", exit(1);
+        error();
 }
 
 /* ===== expressions ===== */
@@ -360,7 +362,7 @@ void base()
         break;
 
     default:
-        exit(1);
+        error();
     }
 }
 
@@ -389,29 +391,6 @@ void factor()
     }
 }
 
-// 5) ✅  factor → ( expr ) | num | id
-/*void factor()
-{
-	switch (lookahead)
-	{
-	case '(':
-		match('(');
-		expr();
-		match(')');
-		break;
-	case NUM:
-		emit(NUM, tokenval);
-		match(NUM);
-		break;
-	case ID:
-		emit(ID, tokenval);
-		match(ID);
-		break;
-	default:
-		error();
-	}
-}
-*/
 /*
 <term> ::= <factor> <term>
 
@@ -520,17 +499,22 @@ void statement()
         cout << "pop " << symtable[tok].lexptr << "\n";
         break;
 
+    // stmt → if (expr) then stmt else stmt
     case IF:
         match(IF);
         match('(');
-        condition();
+        expr();
         match(')');
-        cout << "pop r2\ncmp r2,0\nbe else\n";
+        cout << "pop r2\n";
+        cout << "cmp r2, 0\n";
+        cout << "be else\n";
         match(THEN);
         statement();
+        cout << "b endif\n";
+        cout << "else\n";
         match(ELSE);
-        cout << "else:\n";
         statement();
+        cout << "endif\n";
         break;
 
     case WHILE:
@@ -640,7 +624,8 @@ void error()
 }
 
 /* ===== program ===== */
-
+//<program> ::= <statement> <program>
+//<program> ::= ; <statement> <program> | ε
 void program()
 {
     statement();
@@ -655,9 +640,8 @@ void program()
 
 void init()
 {
-	struct entry *p;
-    for (p = keywords; p->token; p++)
-        insert(p->lexptr, p->token);
+    for (entry *p = keywords; p->token; p++)
+        insert((char *)p->lexptr, p->token);
 }
 
 int main()
