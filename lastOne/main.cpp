@@ -655,8 +655,9 @@ void program()
 
 void init()
 {
-    for (entry *p = keywords; p->token; p++)
-        insert((char *)p->lexptr, p->token);
+	struct entry *p;
+    for (p = keywords; p->token; p++)
+        insert(p->lexptr, p->token);
 }
 
 int main()
