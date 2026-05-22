@@ -546,10 +546,10 @@ void statement()
         statement();
         /* decrement loop counter and test before jumping back */
         cout<<"push 1\n";
-        cout<<"pop 1\n";
-        cout << "sub r2,1\n";
+        cout<<"pop r1\n";
+        cout << "sub r2,r1\n";
         cout << "cmp r2,0\n";
-        cout << "b for\n";
+        cout << "be for\n";
         cout << "endfor:\n";
 
         // case FOR : // for (id = expr ; expr ; expr) do stmt
