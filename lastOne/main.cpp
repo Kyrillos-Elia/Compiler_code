@@ -549,6 +549,7 @@ void statement()
         cout<<"pop r1\n";
         cout << "sub r2,r1\n";
         cout << "cmp r2,0\n";
+       cout << "be endfor\n";
         cout << "be for\n";
         cout << "endfor:\n";
 
